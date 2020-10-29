@@ -1,3 +1,4 @@
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
@@ -23,7 +24,7 @@ public class HelloWorld {
             System.out.println("Request received from: " + t.getRemoteAddress().toString());
 
             // Displaying Hello message
-            String hello = "Welcome to the OpenShift on Z Enablement for Practitioner Session.";
+            String hello = "Welcome to the OpenShift on Z Enablement for Practitioner Session!";
             String response = "<html><body><h1>" + hello + "</h1>\n";
 
             // Displaying the OS arch that this is running on
