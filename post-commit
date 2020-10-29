@@ -1,3 +1,0 @@
-#!/bin/sh
-curl -u ‘admin:fjxdh`5hwuq*ZuC’ http://129.40.12.106:8080/job/x86-pipeline/build?token=authtoken1 &
-curl -u ‘admin:fjxdh`5hwuq*ZuC’ http://129.40.12.106:8080/job/s390x-pipeline/build?token=authtoken1
