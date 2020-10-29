@@ -4,14 +4,14 @@ pipeline {
     }
 
     environment {
-        creds_dockerhub = credentials('dockerhub')                              // dockerhub is user/pass (token) credential stored as Jenkins cred
-        creds_rhcatalog = credentials('rhcatalog')                              // Red Hat catalog is user/pass (token) credential stored as Jenkins cred
-        image = 'eltondesouza/java-hello-world'                                 // Replace with your [dockerid]/java-hello-world:s390x-latest
-        registry = 'https://github.com/OpenShift-Z/hello-world-http-java.git'   // Replace with your fork of the hello-world code
-        oc_token =  credentials('octoken-x86')                                  // Replace with OpenShift Token from GUI
+        creds_dockerhub = credentials('pdf-dockerhub')                              // dockerhub is user/pass (token) credential stored as Jenkins cred
+        creds_rhcatalog = credentials('pdf-rhcatalog')                              // Red Hat catalog is user/pass (token) credential stored as Jenkins cred
+        image = 'pdfruth/java-hello-world'                                 // Replace with your [dockerid]/java-hello-world:s390x-latest
+        registry = 'https://github.com/pdfruth/hello-world-http-java.git'   // Replace with your fork of the hello-world code
+        oc_token =  credentials('pdf-octoken-x86')                                  // Replace with OpenShift Token from GUI
         platform_arch = 'amd64'
         platform_tag = "amd64-latest"
-        ocp_server = 'https://c101-e.us-east.containers.cloud.ibm.com:32149'
+        ocp_server = 'https://c115-e.us-south.containers.cloud.ibm.com:30689'
         registry_server = 'https://cloud.docker.com/v2/repositories'
     }
 
@@ -19,7 +19,7 @@ pipeline {
         stage('Pull Source') {
             steps {
                 // more realiable than pull --force. There are better mechanisms for larger code bases
-                sh 'rm -rf hello-world-http-java'
+                sh 'rm -rf pdf-hello-world-http-java'
                 sh 'git clone $registry' 
             }
         }
