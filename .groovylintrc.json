@@ -1,0 +1,12 @@
+es (11 sloc) 184 Bytes
+{
+    "extends": "recommended",
+    "rules": {
+        "CompileStatic": {
+            "enabled": false
+        },
+        "LineLength": {
+            "enabled": false
+        }
+    }
+}

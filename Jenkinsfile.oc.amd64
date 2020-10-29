@@ -1,0 +1,45 @@
+pipeline {
+    agent {
+        label 'x86'
+    }
+
+    environment {
+        git = 'https://github.com/pdfruth/pdf-hello-world-http-java.git'   // Replace with your fork of the hello-world code
+        oc_token =  credentials('pdf-octoken-x86')                                // Replace with OpenShift Token from GUI
+        pullSecret =  credentials('pdf-pull-secret')
+        ocp_server = 'https://c101-e.us-east.containers.cloud.ibm.com:32149'
+        app = 'pdf-java-hello-world'
+    }
+
+    stages {
+        stage('Create Project') {
+            steps {
+                sh 'oc login --token=$oc_token --insecure-skip-tls-verify --server=$ocp_server'
+                //sh 'oc delete namespace $app --wait=true || true'
+                //sh 'oc new-project java-hello-world'
+                //sh 'kubectl create -f $pullSecret -n=$app'
+                //sh 'oc secrets link builder 13358228-test19918811112-pull-secret -n=$app'
+                //sh 'oc secrets link default 13358228-test19918811112-pull-secret -n=$app'
+            }
+        }
+
+        stage('Build and deploy') {
+            steps {
+                sh 'oc delete bc pdf-hello-world-http-java -n=$app || true'
+                sh 'oc delete deployment pdf-hello-world-http-java -n=$app || true'
+                sh 'oc delete service pdf-hello-world-http-java -n=$app || true'
+                sh 'oc delete route pdf-hello-world-http-java -n=$app || true'
+                sh 'oc new-app $git -n=$app'
+                sh 'sleep 5'
+                 sh 'oc logs -f bc/pdf-hello-world-http-java -n=java-hello-world'
+            }
+        }
+
+        stage('Expose Route') {
+            steps {
+                sh 'oc expose svc/pdf-hello-world-http-java'
+                sh 'oc get routes -n=$app -o json | jq -r \'.items[0].spec.host\''
+            }
+        }
+    }
+}

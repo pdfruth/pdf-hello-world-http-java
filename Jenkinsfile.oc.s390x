@@ -1,0 +1,45 @@
+pipeline {
+    agent {
+        label 's390x'
+    }
+
+    environment {
+        git = 'https://github.com/pdfruth/hello-world-http-java.git'   // Replace with your fork of the hello-world code
+        oc_token =  credentials('pdf-octoken-s390x')                                // Replace with OpenShift Token from GUI
+        pullSecret =  credentials('pdf-pull-secret')
+        ocp_server = 'https://api.ocp1.ocp.local:6443'
+        app = 'pdf-java-hello-world'
+    }
+
+   stages {
+        stage('Create Project') {
+            steps {
+                sh 'oc login --token=$oc_token --insecure-skip-tls-verify --server=$ocp_server'
+                sh 'oc delete namespace $app --wait=true || true'
+                sh 'oc new-project pdf-java-hello-world'
+                sh 'kubectl create -f $pullSecret -n=$app'
+                sh 'oc secrets link builder 12613748-pfruth-pull-secret -n=$app'
+                sh 'oc secrets link default 12613748-pfruth-pull-secret -n=$app'
+            }
+        }
+
+        stage('Build and deploy') {
+            steps {
+                //sh 'oc delete bc hello-world-http-java -n=$app || true'
+                //sh 'oc delete deployment hello-world-http-java -n=$app || true'
+                //sh 'oc delete service hello-world-http-java -n=$app || true'
+                //sh 'oc delete route hello-world-http-java -n=$app || true'
+                sh 'oc new-app $git -n=$app'
+                sh 'sleep 5'
+                sh 'oc logs -f bc/pdf-hello-world-http-java -n=$app'
+            }
+        }
+
+        stage('Expose Route') {
+            steps {
+                sh 'oc expose svc/pdf-hello-world-http-java'
+                sh 'oc get routes -n=$app -o json | jq -r \'.items[0].spec.host\''
+            }
+        }
+    }
+}
